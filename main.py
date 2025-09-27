@@ -16,6 +16,7 @@ def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Asteroids")
     clock = pygame.time.Clock()
+    font = pygame.font.Font(None, 24)
     dt = 0
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
@@ -40,9 +41,18 @@ def main():
             if player.collides_with(asteroid):
                 print("Game over!")
                 sys.exit()
+            for shot in shots:
+                if shot.collides_with(asteroid):
+                    shot.kill()
+                    asteroid.split()
+                    break
 
         for obj in drawable:
             obj.draw(screen)
+        
+        fps = clock.get_fps()
+        fps_text = font.render(f"FPS: {fps:.1f}", True, "white")
+        screen.blit(fps_text, (10, 10))
 
         pygame.display.flip()
         dt = clock.tick(60) / 1000
