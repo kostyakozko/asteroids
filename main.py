@@ -5,6 +5,7 @@ from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from shot import Shot
+from logger import log_state, log_event
 
 def main():
     print("Starting Asteroids!")
@@ -36,13 +37,18 @@ def main():
 
         screen.fill("black")
         updatable.update(dt)
+        
+        # Log game state
+        log_state()
 
         for asteroid in asteroids:
             if player.collides_with(asteroid):
+                log_event("player_death", player_pos=[player.position.x, player.position.y])
                 print("Game over!")
                 sys.exit()
             for shot in shots:
                 if shot.collides_with(asteroid):
+                    log_event("asteroid_destroyed", asteroid_pos=[asteroid.position.x, asteroid.position.y], asteroid_radius=asteroid.radius)
                     shot.kill()
                     asteroid.split()
                     break
